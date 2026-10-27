@@ -1,0 +1,5 @@
+node_modules/
+# Datos de usuarios: nunca se suben al repositorio
+data/
+*.csv
+.env

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear cuenta · Torti Bienestar</title>
+  <meta name="description" content="Creá tu cuenta en Torti Bienestar y empezá tu Plan de Yoga Facial.">
+  <meta name="theme-color" content="#2f6b4f">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="brand" aria-hidden="true">
+      <div class="brand__inner">
+        <div class="logo">
+          <svg class="logo__mark" viewBox="0 0 48 48" fill="none">
+            <path d="M24 6c7 6 10 13 10 19a10 10 0 0 1-20 0c0-6 3-13 10-19Z" fill="currentColor" opacity=".9"/>
+            <path d="M24 16v24M24 28c-3-2-5-5-5-8M24 24c3-2 5-4 5-7" stroke="#f3faf5" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="logo__text">Torti Bienestar</span>
+        </div>
+
+        <p class="brand__eyebrow">Plan Yoga Facial</p>
+        <h2 class="brand__title">Tu rostro también merece un momento de calma.</h2>
+        <p class="brand__lead">Rutinas guiadas de pocos minutos al día para tonificar, relajar tensiones y recuperar la luminosidad natural de tu piel.</p>
+
+        <ul class="benefits">
+          <li>Ejercicios paso a paso en video</li>
+          <li>Rutinas de 10 minutos para tu día a día</li>
+          <li>Seguimiento de tu progreso semana a semana</li>
+        </ul>
+      </div>
+
+      <svg class="brand__leaves" viewBox="0 0 400 400" fill="none">
+        <path d="M320 40c-90 10-160 80-170 170 90-10 160-80 170-170Z" fill="currentColor" opacity=".18"/>
+        <path d="M380 180c-70-20-150 10-190 80 70 20 150-10 190-80Z" fill="currentColor" opacity=".12"/>
+        <path d="M260 300c-60-40-140-40-200 0 60 40 140 40 200 0Z" fill="currentColor" opacity=".1"/>
+      </svg>
+    </section>
+
+    <section class="panel">
+      <div class="card">
+        <div class="logo logo--mobile" aria-hidden="true">
+          <svg class="logo__mark" viewBox="0 0 48 48" fill="none">
+            <path d="M24 6c7 6 10 13 10 19a10 10 0 0 1-20 0c0-6 3-13 10-19Z" fill="currentColor"/>
+            <path d="M24 16v24M24 28c-3-2-5-5-5-8M24 24c3-2 5-4 5-7" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="logo__text">Torti Bienestar</span>
+        </div>
+
+        <div id="form-view">
+          <h1 class="card__title">Creá tu cuenta</h1>
+          <p class="card__subtitle">Empezá hoy tu <strong>Plan de Yoga Facial</strong>.</p>
+
+          <form id="signup-form" novalidate>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email"
+                     placeholder="tu@email.com" required maxlength="254" aria-describedby="email-error">
+              <p class="field__error" id="email-error" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="password">Contraseña</label>
+              <div class="password">
+                <input id="password" name="password" type="password" autocomplete="new-password"
+                       placeholder="Mínimo 8 caracteres" required minlength="8" maxlength="128"
+                       aria-describedby="password-hint password-error">
+                <button type="button" class="password__toggle" data-target="password" aria-label="Mostrar contraseña">Ver</button>
+              </div>
+              <div class="strength" aria-hidden="true"><span class="strength__bar" id="strength-bar"></span></div>
+              <p class="field__hint" id="password-hint">Usá al menos 8 caracteres. Combiná letras, números y símbolos para mayor seguridad.</p>
+              <p class="field__error" id="password-error" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="confirm">Repetí la contraseña</label>
+              <div class="password">
+                <input id="confirm" name="confirm" type="password" autocomplete="new-password"
+                       placeholder="Repetí tu contraseña" required maxlength="128" aria-describedby="confirm-error">
+                <button type="button" class="password__toggle" data-target="confirm" aria-label="Mostrar contraseña">Ver</button>
+              </div>
+              <p class="field__error" id="confirm-error" role="alert"></p>
+            </div>
+
+            <div class="field field--check">
+              <input id="terms" name="terms" type="checkbox" required aria-describedby="terms-error">
+              <label for="terms">Acepto los <a href="#" target="_blank" rel="noopener">términos y condiciones</a> y la <a href="#" target="_blank" rel="noopener">política de privacidad</a> de Torti Bienestar.</label>
+              <p class="field__error" id="terms-error" role="alert"></p>
+            </div>
+
+            <p class="form-error" id="form-error" role="alert"></p>
+
+            <button type="submit" class="btn" id="submit-btn">
+              <span class="btn__label">Crear mi cuenta</span>
+              <span class="btn__spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <p class="card__footer">¿Ya tenés cuenta? <a href="#">Iniciá sesión</a></p>
+        </div>
+
+        <div id="success-view" class="success" hidden>
+          <div class="success__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h1 class="card__title">¡Te damos la bienvenida a Torti Bienestar!</h1>
+          <p class="card__subtitle">Tu cuenta para el Plan de Yoga Facial fue creada con éxito con el email <strong id="success-email"></strong>.</p>
+          <p class="success__note">En breve vas a poder ingresar y comenzar tus rutinas.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

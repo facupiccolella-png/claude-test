@@ -1,0 +1,14 @@
+{
+  "name": "torti-bienestar-registro",
+  "version": "1.0.0",
+  "description": "Página de creación de cuenta para el Plan Yoga Facial de Torti Bienestar",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "exportar": "node scripts/exportar-csv.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
