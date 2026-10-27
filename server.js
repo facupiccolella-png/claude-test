@@ -1,12 +1,12 @@
 'use strict';
 
 // Servidor local de desarrollo de Torti Bienestar — Plan Yoga Facial.
-// En Vercel, la página se sirve desde public/ y el registro desde api/registro.js.
+// En Vercel, la página se sirve desde public/ y el ingreso desde api/ingresar.js.
 
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { registerUser } = require('./lib/registro');
+const { ingresar } = require('./lib/cuentas');
 
 const PORT = Number(process.env.PORT) || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -59,7 +59,7 @@ function readBody(req) {
   });
 }
 
-async function handleRegister(req, res) {
+async function handleLogin(req, res) {
   if (!String(req.headers['content-type'] || '').startsWith('application/json')) {
     return send(res, 415, { ok: false, error: 'Formato no soportado.' });
   }
@@ -69,7 +69,7 @@ async function handleRegister(req, res) {
   } catch (err) {
     return send(res, err.status || 400, { ok: false, error: 'Solicitud inválida.' });
   }
-  const result = await registerUser(body);
+  const result = await ingresar(body);
   send(res, result.status, result.body);
 }
 
@@ -91,9 +91,9 @@ async function serveStatic(req, res) {
 
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.url === '/api/registro') {
+    if (req.url === '/api/ingresar') {
       if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'Método no permitido.' }, { Allow: 'POST' });
-      return await handleRegister(req, res);
+      return await handleLogin(req, res);
     }
     if (req.method === 'GET' || req.method === 'HEAD') return await serveStatic(req, res);
     send(res, 405, { ok: false, error: 'Método no permitido.' });
@@ -105,7 +105,7 @@ const server = http.createServer(async (req, res) => {
 
 if (require.main === module) {
   server.listen(PORT, () => {
-    console.log(`Torti Bienestar — registro disponible en http://localhost:${PORT}`);
+    console.log(`Torti Bienestar — página disponible en http://localhost:${PORT}`);
   });
 }
 

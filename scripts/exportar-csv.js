@@ -8,10 +8,10 @@
 // Las contraseñas se exportan solo como hash (nunca en texto plano).
 
 const fs = require('node:fs');
-const { readUsers, usesBlob } = require('../lib/registro');
+const { readUsers, usesBlob } = require('../lib/cuentas');
 
 const output = process.argv[2] || 'usuarios.csv';
-const columns = ['id', 'email', 'passwordHash', 'plan', 'aceptaTerminos', 'creadoEn'];
+const columns = ['id', 'email', 'passwordHash', 'plan', 'aceptaTerminos', 'creadoEn', 'ultimoIngreso'];
 
 const escape = (value) => {
   let s = String(value ?? '');

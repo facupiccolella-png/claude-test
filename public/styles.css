@@ -119,7 +119,16 @@ a:hover { color: var(--green-900); }
 
 .card__title { margin: 0 0 8px; font-family: "Fraunces", Georgia, serif; font-size: 1.9rem; font-weight: 600; color: var(--green-900); }
 .card__subtitle { margin: 0 0 28px; color: var(--muted); line-height: 1.5; }
-.card__footer { margin: 24px 0 0; text-align: center; color: var(--muted); font-size: .95rem; }
+.card__note {
+  margin: 24px 0 0;
+  padding: 14px 16px;
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--green-900);
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-radius: 12px;
+}
 
 .field { margin-bottom: 18px; }
 .field label { display: block; margin-bottom: 6px; font-size: .92rem; font-weight: 700; color: var(--green-900); }
@@ -172,13 +181,6 @@ a:hover { color: var(--green-900); }
 }
 .password__toggle:hover { background: var(--green-100); }
 .password__toggle:focus-visible { outline: 2px solid var(--green-600); outline-offset: 1px; }
-
-.strength { height: 5px; margin-top: 8px; border-radius: 999px; background: var(--green-100); overflow: hidden; }
-.strength__bar { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--error); transition: width .25s, background .25s; }
-.strength__bar[data-level="1"] { width: 25%; background: #d9534f; }
-.strength__bar[data-level="2"] { width: 50%; background: #e0a43a; }
-.strength__bar[data-level="3"] { width: 75%; background: var(--green-500); }
-.strength__bar[data-level="4"] { width: 100%; background: var(--green-700); }
 
 .field--check {
   display: grid;

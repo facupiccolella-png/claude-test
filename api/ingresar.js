@@ -1,8 +1,8 @@
 'use strict';
 
-// Función de Vercel: POST /api/registro
+// Función de Vercel: POST /api/ingresar
 
-const { registerUser } = require('../lib/registro');
+const { ingresar } = require('../lib/cuentas');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const result = await registerUser(body);
+    const result = await ingresar(body);
     res.status(result.status).json(result.body);
   } catch (err) {
     console.error(err);
