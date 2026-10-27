@@ -1,24 +1,16 @@
 'use strict';
 
-// Servidor de registro de Torti Bienestar — Plan Yoga Facial.
-// Sin dependencias externas: usa solo módulos nativos de Node.
+// Servidor local de desarrollo de Torti Bienestar — Plan Yoga Facial.
+// En Vercel, la página se sirve desde public/ y el registro desde api/registro.js.
 
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const crypto = require('node:crypto');
-const { promisify } = require('node:util');
-
-const scrypt = promisify(crypto.scrypt);
+const { registerUser } = require('./lib/registro');
 
 const PORT = Number(process.env.PORT) || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
-const USERS_FILE = path.join(DATA_DIR, 'usuarios.json');
 const MAX_BODY_BYTES = 10 * 1024;
-const MIN_PASSWORD_LENGTH = 8;
-const MAX_PASSWORD_LENGTH = 128;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -36,90 +28,6 @@ const SECURITY_HEADERS = {
   'Content-Security-Policy':
     "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'",
 };
-
-// --- Almacenamiento -------------------------------------------------------
-
-async function readUsers() {
-  try {
-    return JSON.parse(await fs.readFile(USERS_FILE, 'utf8'));
-  } catch (err) {
-    if (err.code === 'ENOENT') return [];
-    throw err;
-  }
-}
-
-async function writeUsers(users) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  // Escritura atómica: se escribe un temporal y se renombra.
-  const tmp = `${USERS_FILE}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(users, null, 2), { mode: 0o600 });
-  await fs.rename(tmp, USERS_FILE);
-}
-
-// Serializa las escrituras para que dos registros simultáneos no se pisen.
-let writeQueue = Promise.resolve();
-function withLock(fn) {
-  const run = writeQueue.then(fn, fn);
-  writeQueue = run.catch(() => {});
-  return run;
-}
-
-// --- Contraseñas -----------------------------------------------------------
-
-// Nunca se guarda la contraseña en texto plano: se guarda un hash scrypt con sal.
-async function hashPassword(password) {
-  const salt = crypto.randomBytes(16);
-  const key = await scrypt(password, salt, 64);
-  return `scrypt$${salt.toString('hex')}$${key.toString('hex')}`;
-}
-
-// --- Registro --------------------------------------------------------------
-
-function validate({ email, password }) {
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    return 'Completá tu email y contraseña.';
-  }
-  if (email.length > 254 || !EMAIL_RE.test(email)) {
-    return 'Ingresá un email válido.';
-  }
-  if (password.length < MIN_PASSWORD_LENGTH) {
-    return `La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres.`;
-  }
-  if (password.length > MAX_PASSWORD_LENGTH) {
-    return `La contraseña no puede superar los ${MAX_PASSWORD_LENGTH} caracteres.`;
-  }
-  return null;
-}
-
-async function registerUser(body) {
-  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : body.email;
-  const { password, aceptaTerminos } = body;
-
-  const error = validate({ email, password });
-  if (error) return { status: 400, body: { ok: false, error } };
-  if (aceptaTerminos !== true) {
-    return { status: 400, body: { ok: false, error: 'Necesitamos que aceptes los términos y la política de privacidad.' } };
-  }
-
-  const passwordHash = await hashPassword(password);
-
-  return withLock(async () => {
-    const users = await readUsers();
-    if (users.some((u) => u.email === email)) {
-      return { status: 409, body: { ok: false, error: 'Ya existe una cuenta con ese email.' } };
-    }
-    users.push({
-      id: crypto.randomUUID(),
-      email,
-      passwordHash,
-      plan: 'yoga-facial',
-      aceptaTerminos: true,
-      creadoEn: new Date().toISOString(),
-    });
-    await writeUsers(users);
-    return { status: 201, body: { ok: true, mensaje: '¡Tu cuenta fue creada con éxito!' } };
-  });
-}
 
 // --- HTTP ------------------------------------------------------------------
 
@@ -161,9 +69,6 @@ async function handleRegister(req, res) {
   } catch (err) {
     return send(res, err.status || 400, { ok: false, error: 'Solicitud inválida.' });
   }
-  if (!body || typeof body !== 'object') {
-    return send(res, 400, { ok: false, error: 'Solicitud inválida.' });
-  }
   const result = await registerUser(body);
   send(res, result.status, result.body);
 }
@@ -204,4 +109,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { server, registerUser, hashPassword };
+module.exports = { server };

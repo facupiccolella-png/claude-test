@@ -4,9 +4,10 @@ Página de creación de cuenta para el **Plan de Yoga Facial** de Torti Bienesta
 
 ## Cómo correrlo
 
-Requiere Node.js 18 o superior. No tiene dependencias externas.
+Requiere Node.js 18 o superior.
 
 ```bash
+npm install
 npm start
 ```
 
@@ -15,11 +16,16 @@ Abrí <http://localhost:3000>. El puerto se cambia con la variable `PORT`.
 ## Qué hace
 
 - **Formulario** (`public/`): email, contraseña, confirmación de contraseña y aceptación de términos. Valida en el navegador (formato de email, mínimo 8 caracteres, que las contraseñas coincidan) y muestra un medidor de seguridad de la contraseña. Se adapta a celular.
-- **Servidor** (`server.js`): recibe el registro en `POST /api/registro`, vuelve a validar los datos, rechaza emails repetidos y guarda la cuenta.
+- **Registro** (`lib/registro.js`): recibe el registro en `POST /api/registro`, vuelve a validar los datos, rechaza emails repetidos y guarda la cuenta.
+  - En Vercel lo atiende la función `api/registro.js`.
+  - En tu computadora lo atiende `server.js`.
 
 ## Dónde quedan los datos
 
-Las cuentas se guardan en `data/usuarios.json` (la carpeta se crea sola y está en `.gitignore`, así que nunca se sube al repositorio). Cada registro tiene:
+- **En Vercel:** cada cuenta se guarda como un archivo **privado** en Vercel Blob (`usuarios/<hash del email>.json`). Solo se puede leer con el token del Blob store; no hay ninguna dirección pública para verlas.
+- **En tu computadora:** en `data/usuarios.json` (la carpeta se crea sola y está en `.gitignore`, así que nunca se sube al repositorio).
+
+Cada registro tiene:
 
 | Campo            | Ejemplo                                  |
 |------------------|------------------------------------------|
@@ -35,12 +41,21 @@ Las cuentas se guardan en `data/usuarios.json` (la carpeta se crea sola y está 
 ### Exportar para cargar en el sistema
 
 ```bash
-npm run exportar                 # genera data/usuarios.csv
+npm run exportar                 # genera usuarios.csv con las cuentas locales
 npm run exportar -- salida.csv   # o en la ruta que indiques
 ```
 
-## Antes de publicarlo
+Para exportar las cuentas guardadas **en Vercel**, copiá el `BLOB_READ_WRITE_TOKEN` del Blob store (Vercel → Storage → tu store → `.env.local`) y corré:
 
-- Servirlo siempre con **HTTPS** (por ejemplo detrás de un proxy o en un hosting que lo provea).
+```bash
+BLOB_READ_WRITE_TOKEN=... npm run exportar
+```
+
+## Despliegue en Vercel
+
+El proyecto se despliega tal cual: `public/` se sirve como sitio estático y `api/registro.js` como función. Necesita un Blob store **privado** conectado al proyecto (Vercel → Storage), que es el que agrega las credenciales de acceso automáticamente.
+
+## Pendientes
+
 - Reemplazar los enlaces `#` de *términos y condiciones*, *política de privacidad* e *iniciar sesión* por las páginas reales.
-- Para mucho volumen de registros, conviene pasar de `usuarios.json` a una base de datos.
+- Para mucho volumen de registros o para consultas (buscar, filtrar), conviene pasar a una base de datos.
